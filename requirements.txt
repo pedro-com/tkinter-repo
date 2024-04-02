@@ -1,0 +1,4 @@
+tk
+ttkbootstrap
+customtkinter
+pillow

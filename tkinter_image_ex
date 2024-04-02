@@ -1,0 +1,46 @@
+import tkinter as tk
+from tkinter import ttk
+import customtkinter as ctk
+from PIL import Image, ImageTk
+from os import walk # To show the directory contents
+window = tk.Tk()
+window.geometry('600x400')
+window.title('Images')
+
+def stretch_image(event):
+    global image_original, resized_tk
+    width = event.width
+    height = event.height
+    resized_image = image_original.resize((width, height))
+    resized_tk = ImageTk.PhotoImage(resized_image)
+    canvas.create_image(0, 0, image = resized_tk, anchor = 'nw')
+
+def fill_image(event):
+    global image_ratio
+    canvas_ratio = event.width / event.height
+    if canvas_ratio > image_ratio:
+        width = int(event.width)
+        height = int(width/image_ratio)
+    else:
+        height = int(event.height)
+        width = int(height*image_ratio)
+    resized_image = image_original.resize((width, height))
+    resized_tk = ImageTk.PhotoImage(resized_image)
+    canvas.create_image(0, 0, image = resized_tk, anchor = 'center')
+    
+
+# Grid layout
+window.columnconfigure((0, 1, 2, 3, 4), uniform=True)
+window.rowconfigure((0,), uniform=True)
+image_original = Image.open('racoon.jpg')
+image_tk = ImageTk.PhotoImage(image_original)
+image_ratio = image_original.size[0] / image_original[1]
+python_light = Image.open('python_light.jpeg').resize(30, 30)
+python_dark = Image.open('python_dark.jpeg').resize(30, 30)
+
+image_ctk = ctk.CTkImage(light_image=python_dark, dark_image=python_dark)
+
+canvas = tk.Canvas(window, background='black', bd=0, highlightthickness= 0, relief = 'ridge')
+canvas.grid(column = 1, columnspan= 3, row = 0, sticky = 'nswe')
+canvas.bind('<Configure>', stretch_image)
+window.mainloop()
